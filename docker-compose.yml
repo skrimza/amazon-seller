@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ".env"
+    command: "gunicorn -w ${WORKER} -b ${HOST} 'app:app' --log-level DEBU"
+    volumes:
+      - "./app.py:/app/app.py:ro"
+      - "./config.py:/app/config.py:ro"
+      - "./form.py:/app/form.py:ro"
+      - "./templates:/app/templates:ro"
+    restart: always
+
+  nginx:
+    image: nginx:1.25.3-alpine3.18
+    ports:
+      - "80:80"
+    volumes:
+      - "./conf.d:/etc/nginx/conf.d:ro"
+      - "./static:/opt/static:ro"
+    depends_on:
+      - app
+    restart: always

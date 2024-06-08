@@ -1,3 +1,5 @@
+from traceback import print_exc
+
 from pydantic import BaseModel, Field, EmailStr
 from pydantic_core import ValidationError
 
@@ -10,12 +12,7 @@ class ContactForm(BaseModel):
 
 def pyform(data):
     try:
-        contact_form = ContactForm(**data)
+        return ContactForm.model_validate(obj=data).model_dump()
     except ValidationError as e:
-        errors = e.errors()
-        for error in errors:
-            field = error['loc'][0]
-            return f'Your {field} is invalid! Please Try Again'
-    else:
-        return contact_form.model_dump()
-    
+        print_exc()
+        return f'Your {", ".join(err["loc"][0] for err in e.errors())} is invalid! Please Try Again'

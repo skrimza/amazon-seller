@@ -1,34 +1,28 @@
-$(function () {
-    $(".hamburger").on("click", function() {
-        $(".menu").toggleClass("active");
-        $(".hamburger").toggleClass("active");
-        $(".mobmenu").toggleClass("active");
+$(".hamburger").on("click", function() {
+    $(".menu").toggleClass("active");
+    $(".hamburger").toggleClass("active");
+    $(".mobmenu").toggleClass("active");
+});
+while ($(".menu").hasClass("active")) {
+    $(screen).on("click", function() {
+        $(".menu").removeClass("active");
     });
-    while ($(".menu").hasClass("active")) {
-        $(screen).on("click", function() {
-            $(".menu").removeClass("active");
-        });
+}
+
+$(window).scroll(function () {
+    if ($(this).scrollTop() > 1) {
+        $(".menu").addClass('active');
+    } else {
+        $(".menu").removeClass('active');
     }
 });
 
-$(function () {
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 1) {
-            $(".menu").addClass('active');
-        } else {
-            $(".menu").removeClass('active');
-        }
-    });
-});
+$(document).on('click', 'a[href^="#"]', function (event) {
+    event.preventDefault();
 
-$(function () {
-    $(document).on('click', 'a[href^="#"]', function (event) {
-        event.preventDefault();
-
-        $('html, body').animate({
-            scrollTop: $($.attr(this, 'href')).offset().top
-        }, 500);
-    });
+    $('html, body').animate({
+        scrollTop: $($.attr(this, 'href')).offset().top
+    }, 500);
 });
 
 const swiper = new Swiper('.swiper', {
@@ -133,15 +127,3 @@ if (animItems.length > 0) {
     }
     animOnScroll();
 }
-
-
-
-
-
-
-
-
-
-
-
-    
