@@ -23,9 +23,9 @@ $('#form').on('submit', function (e) {
                 $('#output').text(data).show();
                 $('#form')[0].reset();
             }
-            setTimeout(function () {
-                $('#output').removeClass('active');
-            }, 3000);
+        setTimeout(function () {
+            $('#output').removeClass('active');
+        }, 3000);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // Обработка ошибок AJAX-запроса
