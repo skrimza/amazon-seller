@@ -21,6 +21,7 @@ $('#form').on('submit', function (e) {
             } else {
                 // Иначе это строка с сообщением об ошибке
                 $('#output').text(data).show();
+                $('#form')[0].reset();
             }
             setTimeout(function () {
                 $('#output').removeClass('active');
