@@ -671,6 +671,7 @@ li.menu_navigation__link:last-of-type .menu_navigation__target:last-of-type {
 }
 
 .my-swiper {
+  max-width: 1220px;
   width: 100%;
   max-height: 150px;
   height: 100%;
