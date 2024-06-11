@@ -78,11 +78,13 @@ const myswiper = new Swiper('.my-swiper', {
     breakpoints: {
         320: {
             slidesPerView: 1,
-            spaceBetween: 10
+            spaceBetween: 10,
+            centeredSlides: true
         },
         576: {
             slidesPerView: 2,
-            spaceBetween: 30
+            spaceBetween: 30,
+            centeredSlides: true
         }
 
     }

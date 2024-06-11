@@ -676,6 +676,7 @@ li.menu_navigation__link:last-of-type .menu_navigation__target:last-of-type {
   max-height: 150px;
   height: 100%;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 .form {
