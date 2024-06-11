@@ -1178,7 +1178,7 @@ form input, form textarea {
     padding: 30px;
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    z-index: 3;
+    z-index: 1000;
   }
   .mobmenu.active {
     -webkit-transform: translateX(0);
