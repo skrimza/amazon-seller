@@ -1178,13 +1178,13 @@ form input, form textarea {
     padding: 30px;
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    z-index: 1000;
   }
   .mobmenu.active {
     -webkit-transform: translateX(0);
         -ms-transform: translateX(0);
             transform: translateX(0);
     top: 100%;
+    z-index: 1000;
   }
   .mobile-menu_item {
     margin: 15px 0;
