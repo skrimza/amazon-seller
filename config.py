@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     MAIL_USERNAME: EmailStr
     MAIL_PASSWORD: SecretStr
     HOST: str
+    MAIL_OWNER: EmailStr
 
 
 settings = Settings()

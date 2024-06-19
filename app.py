@@ -17,6 +17,7 @@ app.config['MAIL_USE_SSL'] = settings.MAIL_USE_SSL
 app.config['MAIL_USERNAME'] = settings.MAIL_USERNAME
 app.config['MAIL_PASSWORD'] = settings.MAIL_PASSWORD.get_secret_value()
 app.config['MAIL_DEFAULT_SENDER'] = settings.MAIL_USERNAME
+app.config['MAIL_OWNER'] = settings.MAIL_OWNER
 
 
 @app.route('/')
@@ -44,10 +45,10 @@ def send_message():
             body=f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
                  f"Сообщение: {result.get('message')}",
             sender=settings.MAIL_USERNAME,
-            recipients=[settings.MAIL_USERNAME]  # Здесь укажите email владельца
+            recipients=[settings.MAIL_OWNER]  # Здесь укажите email владельца
         )
         return jsonify({})
-        # mail.send(message)
-        # mail.send(owner_message)
+        mail.send(message)
+        mail.send(owner_message)
     else:
         return result
