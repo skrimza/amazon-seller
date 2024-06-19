@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     MAIL_SERVER: str
     MAIL_PORT: int
     MAIL_USE_TLS: bool
+    MAIL_USE_SSL: bool
     MAIL_USERNAME: EmailStr
     MAIL_PASSWORD: SecretStr
     HOST: str

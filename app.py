@@ -13,6 +13,7 @@ mail.init_app(app)
 app.config['MAIL_SERVER'] = settings.MAIL_SERVER
 app.config['MAIL_PORT'] = settings.MAIL_PORT
 app.config['MAIL_USE_TLS'] = settings.MAIL_USE_TLS
+app.config['MAIL_USE_SSL'] = settings.MAIL_USE_SSL
 app.config['MAIL_USERNAME'] = settings.MAIL_USERNAME
 app.config['MAIL_PASSWORD'] = settings.MAIL_PASSWORD.get_secret_value()
 app.config['MAIL_DEFAULT_SENDER'] = settings.MAIL_USERNAME
@@ -38,7 +39,15 @@ def send_message():
             sender=settings.MAIL_USERNAME,
             recipients=[result.get('email')]
         )
+        owner_message = Message(
+            subject="Новый запрос с лендинг-страницы",
+            body=f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
+                 f"Сообщение: {result.get('message')}",
+            sender=settings.MAIL_USERNAME,
+            recipients=[settings.MAIL_USERNAME]  # Здесь укажите email владельца
+        )
         return jsonify({})
         # mail.send(message)
+        # mail.send(owner_message)
     else:
         return result
