@@ -1,7 +1,7 @@
 from http import HTTPMethod
 
 from flask import Flask, render_template, request, jsonify
-import aio_smtp
+import aiosmptlib
 
 from config import settings
 from form import pyform
@@ -37,7 +37,7 @@ def homepage():
 async def send_message():
     result = pyform(data=request.form.to_dict())
     if isinstance(result, dict):
-        message = aio_smtp.Message(
+        message = aiosmptlib.Message(
             subject="Thank you for contacting us",
             body=f"Hello {result.get('username')}, \n\n"
                  f"Thank you for reaching out to us. We have received your \n\n"
@@ -48,7 +48,7 @@ async def send_message():
             sender=settings.MAIL_USERNAME,
             recipients=[result.get('email')]
         )
-        owner_message = aio_smtp.Message(
+        owner_message = aiosmptlib.Message(
             subject="Новый запрос со страницы",
             body=f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
                  f"Сообщение: {result.get('message')}",
