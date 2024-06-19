@@ -1,7 +1,7 @@
 from http import HTTPMethod
 
 from flask import Flask, render_template, request, jsonify
-import aiosmptlib
+from flask_mail import Mail, Message
 
 from config import settings
 from form import pyform
@@ -20,24 +20,16 @@ app.config['MAIL_DEFAULT_SENDER'] = settings.MAIL_USERNAME
 app.config['MAIL_OWNER'] = settings.MAIL_OWNER
 
 
-smtp_client = aio_smtp.SMTP(
-    host=app.config['MAIL_SERVER'],
-    port=app.config['MAIL_PORT'],
-    start_tls=app.config['MAIL_USE_TLS'],
-    username=app.config['MAIL_USERNAME'],
-    password=app.config['MAIL_PASSWORD']
-)
-
 @app.route('/')
 def homepage():
     return render_template("index.html")
 
 
 @app.route(rule="/contact", methods=[HTTPMethod.POST])
-async def send_message():
+def send_message():
     result = pyform(data=request.form.to_dict())
     if isinstance(result, dict):
-        message = aiosmptlib.Message(
+        message = Message(
             subject="Thank you for contacting us",
             body=f"Hello {result.get('username')}, \n\n"
                  f"Thank you for reaching out to us. We have received your \n\n"
@@ -48,15 +40,15 @@ async def send_message():
             sender=settings.MAIL_USERNAME,
             recipients=[result.get('email')]
         )
-        owner_message = aiosmptlib.Message(
+        owner_message = Message(
             subject="Новый запрос со страницы",
             body=f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
                  f"Сообщение: {result.get('message')}",
             sender=settings.MAIL_USERNAME,
             recipients=[settings.MAIL_OWNER]  # Здесь укажите email владельца
         )
-        await smtp_client.send(message)
-        await smtp_client.send(owner_message)
         return jsonify({})
+        mail.send(message)
+        mail.send(owner_message)
     else:
         return result
