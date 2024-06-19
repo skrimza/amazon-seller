@@ -41,7 +41,7 @@ def send_message():
             recipients=[result.get('email')]
         )
         owner_message = Message(
-            subject="Новый запрос с лендинг-страницы",
+            subject="Новый запрос со страницы",
             body=f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
                  f"Сообщение: {result.get('message')}",
             sender=settings.MAIL_USERNAME,
