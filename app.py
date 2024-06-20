@@ -1,14 +1,16 @@
 from http import HTTPMethod
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from flask import Flask, render_template, request, jsonify
-from flask_mail import Mail, Message
 
 from config import settings
 from form import pyform
 
 app = Flask(__name__)
-mail = Mail()
-mail.init_app(app)
+
 
 app.config['MAIL_SERVER'] = settings.MAIL_SERVER
 app.config['MAIL_PORT'] = settings.MAIL_PORT
@@ -20,6 +22,21 @@ app.config['MAIL_DEFAULT_SENDER'] = settings.MAIL_USERNAME
 app.config['MAIL_OWNER'] = settings.MAIL_OWNER
 
 
+def send_email(subject, body, recipient):
+    msg = MIMEMultipart()
+    msg['From'] = settings.MAIL_USERNAME
+    msg['To'] = recipient
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+    try:
+        with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
+            server.starttls()
+            server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
+            server.sendmail(settings.MAIL_USERNAME, recipient, msg.as_string())
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+
 @app.route('/')
 def homepage():
     return render_template("index.html")
@@ -29,26 +46,16 @@ def homepage():
 def send_message():
     result = pyform(data=request.form.to_dict())
     if isinstance(result, dict):
-        message = Message(
-            subject="Thank you for contacting us",
-            body=f"Hello {result.get('username')}, \n\n"
-                 f"Thank you for reaching out to us. We have received your \n\n"
-                 f"message and will review it shortly. We strive to provide \n\n"
-                 f"prompt and quality service, so your inquiry will be addressed \n\n"
-                 f"as soon as possible. If you have any further questions or additional \n\n"
-                 f"information, please feel free to reach out to us. Best regards.",
-            sender=settings.MAIL_USERNAME,
-            recipients=[result.get('email')]
-        )
-        owner_message = Message(
-            subject="Новый запрос со страницы",
-            body=f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
-                 f"Сообщение: {result.get('message')}",
-            sender=settings.MAIL_USERNAME,
-            recipients=[settings.MAIL_OWNER]  # Здесь укажите email владельца
-        )
+        user_email_subject = "Thank you for contacting us"
+        user_email_body = (f"Hello {result.get('username')}, \n\n"
+                           f"Thank you for reaching out to us. We have received your message and will review it shortly. "
+                           f"We strive to provide prompt and quality service, so your inquiry will be addressed as soon as possible. "
+                           f"If you have any further questions or additional information, please feel free to reach out to us. Best regards.")
+        owner_email_subject = "Новый запрос со страницы"
+        owner_email_body = (f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
+                            f"Сообщение: {result.get('message')}")
         return jsonify({})
-        mail.send(message)
-        mail.send(owner_message)
+        send_email(user_email_subject, user_email_body, result.get('email'))
+        send_email(owner_email_subject, owner_email_body, settings.MAIL_OWNER)
     else:
         return result
