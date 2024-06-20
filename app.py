@@ -54,8 +54,8 @@ def send_message():
         owner_email_subject = "Новый запрос со страницы"
         owner_email_body = (f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
                             f"Сообщение: {result.get('message')}")
-        return jsonify({})
         send_email(user_email_subject, user_email_body, result.get('email'))
-        send_email(owner_email_subject, owner_email_body, settings.MAIL_OWNER)
+        send_email(owner_email_subject, owner_email_body, settings.MAIL_OWNER)        
+        return jsonify({})
     else:
         return result
