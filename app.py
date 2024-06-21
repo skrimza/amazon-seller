@@ -27,7 +27,7 @@ def send_email(subject, body, recipient):
     msg['From'] = settings.MAIL_USERNAME
     msg['To'] = recipient
     msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body, 'plain', 'utf-8'))
     try:
         with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
             server.starttls()
