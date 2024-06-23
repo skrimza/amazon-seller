@@ -31,6 +31,7 @@ def send_email(subject, body, recipient):
     try:
         with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
             server.starttls()
+            server.ehlo()
             server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
             server.sendmail(settings.MAIL_USERNAME, recipient, msg.as_string())
     except Exception as e:
