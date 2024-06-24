@@ -29,7 +29,7 @@ def send_email(subject, body, recipient):
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
     try:
-        with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
+        with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT, timeout=10) as server:
             server.starttls()
             server.ehlo()
             server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
