@@ -16,6 +16,7 @@ app.config['MAIL_SERVER'] = settings.MAIL_SERVER
 app.config['MAIL_PORT'] = settings.MAIL_PORT
 app.config['MAIL_USE_TLS'] = settings.MAIL_USE_TLS
 app.config['MAIL_USE_SSL'] = settings.MAIL_USE_SSL
+app.config['HOST'] = settings.HOST
 app.config['MAIL_USERNAME'] = settings.MAIL_USERNAME
 app.config['MAIL_PASSWORD'] = settings.MAIL_PASSWORD.get_secret_value()
 app.config['MAIL_DEFAULT_SENDER'] = settings.MAIL_USERNAME
@@ -29,7 +30,7 @@ def send_email(subject, body, recipient):
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
     try:
-        with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT, timeout=10) as server:
+        with smtplib.SMTP(settings.HOST, settings.MAIL_SERVER, settings.MAIL_PORT, timeout=10) as server:
             server.starttls()
             server.ehlo()
             server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
