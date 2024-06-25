@@ -32,8 +32,8 @@ def send_email(subject, body, recipient):
         with smtplib.SMTP( settings.MAIL_SERVER, settings.MAIL_PORT, timeout=10) as server:
             server.ehlo()
             server.starttls()
-            server.ehlo()
             server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
+            server.auth_plain()
             server.sendmail(settings.MAIL_USERNAME, recipient, msg.as_string())
     except Exception as e:
         print(f"Failed to send email: {e}")
