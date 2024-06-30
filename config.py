@@ -12,14 +12,9 @@ class Settings(BaseSettings):
         frozen=True
     )
 
-    MAIL_SERVER: str
-    MAIL_PORT: int
-    MAIL_USE_TLS: bool
-    MAIL_USE_SSL: bool
-    MAIL_USERNAME: EmailStr
-    MAIL_PASSWORD: SecretStr
     HOST: str
-    MAIL_OWNER: EmailStr
+    ID_OWNER: SecretStr
+    BOT_TOKEN: SecretStr
 
 
 settings = Settings()

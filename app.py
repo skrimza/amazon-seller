@@ -1,8 +1,5 @@
-from http import HTTPMethod
-
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+from http import HTTPMethod, client
+import json
 
 from flask import Flask, render_template, request, jsonify
 
@@ -11,33 +8,27 @@ from form import pyform
 
 app = Flask(__name__)
 
-
-app.config['MAIL_SERVER'] = settings.MAIL_SERVER
-app.config['MAIL_PORT'] = settings.MAIL_PORT
-app.config['MAIL_USE_TLS'] = settings.MAIL_USE_TLS
-app.config['MAIL_USE_SSL'] = settings.MAIL_USE_SSL
-app.config['MAIL_USERNAME'] = settings.MAIL_USERNAME
-app.config['MAIL_PASSWORD'] = settings.MAIL_PASSWORD.get_secret_value()
-app.config['MAIL_DEFAULT_SENDER'] = settings.MAIL_USERNAME
-app.config['MAIL_OWNER'] = settings.MAIL_OWNER
+app.config['ID_OWNER'] = settings.ID_OWNER.get_secret_value()
+app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 
-def send_email(subject, body, recipient):
-    msg = MIMEMultipart()
-    msg['From'] = settings.MAIL_USERNAME
-    msg['To'] = recipient
-    msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain', 'utf-8'))
-    try:
-        with smtplib.SMTP( host=settings.MAIL_SERVER, port=settings.MAIL_PORT) as server:
-            # server.ehlo()
-            server.starttls()
-            server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
-            server.auth_plain()
-            server.sendmail(settings.MAIL_USERNAME, recipient, msg.as_string())
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-
+def send_message_telegram(chat_id, text):
+    telegram_connect = client.HTTPConnection("api.telegram.org")
+    headers = {'Content-type': 'application/json'}
+    payload = {
+        'chat_id': chat_id,
+        'text': text
+    }
+    json_data = json.dumps(payload)
+    conn = client.HTTPSConnection("api.telegram.org")
+    conn.request("POST", f"/bot{settings.BOT_TOKEN}/sendMessage", json_data, headers)
+    
+    response = conn.getresponse()
+    data = response.read()
+    
+    conn.close()
+    return json.loads(data)
+        
 
 @app.route('/')
 def homepage():
@@ -48,16 +39,9 @@ def homepage():
 def send_message():
     result = pyform(data=request.form.to_dict())
     if isinstance(result, dict):
-        user_email_subject = "Thank you for contacting us"
-        user_email_body = (f"Hello {result.get('username')}, \n\n"
-                           f"Thank you for reaching out to us. We have received your message and will review it shortly. "
-                           f"We strive to provide prompt and quality service, so your inquiry will be addressed as soon as possible. "
-                           f"If you have any further questions or additional information, please feel free to reach out to us. Best regards.")
-        owner_email_subject = "Новый запрос со страницы"
-        owner_email_body = (f"Получен новый запрос от {result.get('username')} ({result.get('email')}):\n\n"
-                            f"Сообщение: {result.get('message')}")
-        send_email(user_email_subject, user_email_body, result.get('email'))
-        send_email(owner_email_subject, owner_email_body, settings.MAIL_OWNER)        
-        return jsonify({})
+        owner_data_body = (f"New request from the website:\n Name: {result.get('username')},\n email: ({result.get('email')}):\n\n"
+                            f"text: {result.get('message')}")
+        response = send_message_telegram(settings.ID_OWNER, owner_data_body)        
+        return jsonify(response)
     else:
         return result
