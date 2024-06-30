@@ -20,7 +20,7 @@ def send_message_telegram(text):
     # }
     # json_data = json.dumps(payload)
     conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/sendMessage?chat_id={settings.ID_OWNER}&text={text}")
+    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/sendMessage?chat_id={settings.ID_OWNER}&text={text.replace(' ', '_')}")
     
     response = conn.getresponse()
     data = response.read()
