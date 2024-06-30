@@ -1,5 +1,6 @@
 from http import HTTPMethod, client
 import json
+from urllib import parse
 
 from flask import Flask, render_template, request, jsonify
 
@@ -20,7 +21,7 @@ def send_message_telegram(text):
     # }
     # json_data = json.dumps(payload)
     conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/sendMessage?chat_id={settings.ID_OWNER}&text={text.replace(' ', '_')}")
+    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/sendMessage?chat_id={settings.ID_OWNER}&text={parse.quote(text)}")
     
     response = conn.getresponse()
     data = response.read()
