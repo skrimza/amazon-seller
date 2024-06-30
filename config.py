@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     )
 
     HOST: str
-    ID_OWNER: SecretStr
+    ID_OWNER: int
     BOT_TOKEN: SecretStr
 
 
