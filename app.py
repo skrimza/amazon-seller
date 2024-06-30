@@ -15,13 +15,13 @@ app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 def send_message_telegram(text):
     headers = {'Content-type': 'application/json'}
-    # payload = {
-    #     'chat_id': settings.ID_OWNER,
-    #     'text': text
-    # }
-    # json_data = json.dumps(payload)
+    payload = {
+        'chat_id': 735236052,
+        'text': text
+    }
+    json_data = json.dumps(payload)
     conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/sendMessage?chat_id={settings.ID_OWNER}&text={parse.quote(text)}")
+    conn.request(HTTPMethod.POST, f"/bot{settings.BOT_TOKEN}/sendMessage", json_data, headers=headers)
     
     response = conn.getresponse()
     data = response.read()
