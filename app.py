@@ -13,20 +13,7 @@ app.config['ID_OWNER'] = settings.ID_OWNER
 app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 
-def get_updates(offset=None):
-    params = {'offset': offset, 'timeout': 100}
-    query_string = parse.urlencode(params)
-    conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/getUpdates?{query_string}")
-
-    response = conn.getresponse()
-    data = response.read()
-
-    conn.close()
-    
-
 def send_message_telegram(text):
-    get_updates()
     headers = {'Content-type': 'application/json'}
     payload = {
         'chat_id': settings.ID_OWNER,
@@ -49,7 +36,6 @@ def homepage():
 
 @app.route(rule="/contact", methods=[HTTPMethod.POST])
 def send_message():
-    updates = get_updates()
     result = pyform(data=request.form.to_dict())
     if isinstance(result, dict):
         owner_data_body = (f"New request from the website:\n Name: {result.get('username')},\n email: ({result.get('email')}):\n\n"
