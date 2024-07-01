@@ -37,7 +37,7 @@ def send_message_telegram(text):
         'chat_id': settings.ID_OWNER,
         'text': text
     }
-    json_data = json.dumps(payload)
+    json_data = json.dumps(payload).encode('utf-8')
     conn = client.HTTPSConnection("api.telegram.org")
     conn.request(HTTPMethod.POST, f"/bot{settings.BOT_TOKEN}/sendMessage", json_data, headers=headers)
     response = conn.getresponse()
