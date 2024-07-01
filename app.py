@@ -14,8 +14,10 @@ app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 
 def get_updates():
+    offset=0
+    headers = {'Content-type': 'application/json'}
     conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.POST, f"https://api.telegram.org/bot{settings.BOT_TOKEN}/getUpdates?{offset=0}", headers=headers)
+    conn.request(HTTPMethod.POST, f"https://api.telegram.org/bot{settings.BOT_TOKEN}/getUpdates?{offset}", headers=headers)
 
 
 
