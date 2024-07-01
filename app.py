@@ -1,7 +1,6 @@
 from http import HTTPMethod, client
 import json
 from urllib import parse
-import requests
 
 from flask import Flask, render_template, request, jsonify
 
@@ -14,12 +13,11 @@ app.config['ID_OWNER'] = settings.ID_OWNER
 app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 
-def get_updates(offset=0):
+def get_updates():
     try:
         conn = client.HTTPSConnection("api.telegram.org")
-        conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/getUpdates?offset={offset}")
+        conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/getUpdates")
         response = conn.getresponse()
-        
         if response.status == 200:
             data = response.read()
             updates = json.loads(data)
@@ -58,7 +56,6 @@ def homepage():
 def send_message():
     updates = get_updates()
     result = pyform(data=request.form.to_dict())
-    offset = 0
     if isinstance(result, dict):
         owner_data_body = (f"New request from the website:\n Name: {result.get('username')},\n email: ({result.get('email')}):\n\n"
                             f"text: {result.get('message')}")
@@ -66,4 +63,3 @@ def send_message():
         return jsonify(response)
     else:
         return result
-
