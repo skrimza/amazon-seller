@@ -17,7 +17,7 @@ def get_updates():
     offset=0
     headers = {'Content-type': 'application/json'}
     conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.POST, f"https://api.telegram.org/bot{settings.BOT_TOKEN}/getUpdates?{offset}", headers=headers)
+    conn.request(HTTPMethod.POST, f"/bot{settings.BOT_TOKEN}/getUpdates", offset, headers=headers)
 
 
 
@@ -30,7 +30,7 @@ def send_message_telegram(text):
     }
     json_data = json.dumps(payload)
     conn = client.HTTPSConnection("api.telegram.org")
-    conn.request(HTTPMethod.POST, f"https://api.telegram.org/bot{settings.BOT_TOKEN}/sendMessage?{json_data}", headers=headers)
+    conn.request(HTTPMethod.POST, f"/bot{settings.BOT_TOKEN}/sendMessage", json_data, headers=headers)
     response = conn.getresponse()
     data = response.read()
     
