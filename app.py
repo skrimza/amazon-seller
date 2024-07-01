@@ -9,7 +9,7 @@ from form import pyform
 
 app = Flask(__name__)
 
-app.config['ID_OWNER'] = settings.ID_OWNER.get_secret_value()
+app.config['ID_OWNER'] = settings.ID_OWNER
 app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 
