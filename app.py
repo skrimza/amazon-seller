@@ -13,28 +13,23 @@ app.config['ID_OWNER'] = settings.ID_OWNER
 app.config['BOT_TOKEN'] = settings.BOT_TOKEN.get_secret_value()
 
 
-def get_updates():
-    try:
-        conn = client.HTTPSConnection("api.telegram.org")
-        conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/getUpdates")
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            updates = json.loads(data)
-            conn.close()
-            return updates
-        else:
-            conn.close()
-            return {"error": f"Failed to fetch updates. Status code: {response.status}"}
-    
-    except Exception as e:
-        return {"error": f"Exception occurred: {str(e)}"}
+def get_updates(offset=None):
+    params = {'offset': offset, 'timeout': 100}
+    query_string = parse.urlencode(params)
+    conn = client.HTTPSConnection("api.telegram.org")
+    conn.request(HTTPMethod.GET, f"/bot{settings.BOT_TOKEN}/getUpdates?{query_string}")
+
+    response = conn.getresponse()
+    data = response.read()
+
+    conn.close()
     
 
 def send_message_telegram(text):
+    get_updates()
     headers = {'Content-type': 'application/json'}
     payload = {
-        'chat_id': 735236052,
+        'chat_id': settings.ID_OWNER,
         'text': text
     }
     json_data = json.dumps(payload)
