@@ -58,7 +58,7 @@ def send_message():
     if isinstance(result, dict):
         owner_data_body = (f"New request from the website:\n Name: {result.get('username')},\n email: ({result.get('email')}):\n\n"
                             f"text: {result.get('message')}")
-        response = send_message_telegram(parse.quote(owner_data_body))        
+        response = send_message_telegram(owner_data_body.replace('\n', ' '))        
         return jsonify(response)
     else:
         return result
